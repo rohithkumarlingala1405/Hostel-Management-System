@@ -1,8 +1,8 @@
-# 🏨 IIT Goa Hostel Management System
+# IIT Goa Hostel Management System
 
 A full-stack web application built with Flask to streamline hostel operations at IIT Goa.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -13,7 +13,7 @@ A full-stack web application built with Flask to streamline hostel operations at
 | Forms | WTForms |
 | Data Upload | Pandas |
 
-## ✨ Features
+## Features
 
 - **Role-based access control** — Admin (Hall Office) and Student roles
 - **Student Management** — Add, Edit, Delete, Search students
@@ -24,7 +24,7 @@ A full-stack web application built with Flask to streamline hostel operations at
 - **Dashboard** — Live statistics for students, rooms, complaints
 - **Responsive UI** — Works on desktop and mobile
 
-## 🚀 Setup & Installation
+## Setup & Installation
 ```bash
 # 1. Clone the repository
 git clone https://github.com/rohithkumarlingala1405/Hostel-Management-System.git
@@ -45,14 +45,14 @@ python app.py
 
 Then open **http://127.0.0.1:5000** in your browser.
 
-## 🔐 Default Credentials
+## Default Credentials
 
 | Role | Username | Password |
 |------|----------|----------|
 | Admin (Hall Office) | admin | admin123 |
 | Student | student | student123 |
 
-## 📁 Project Structure
+## Project Structure
 ```
 HostelManagement/
 ├── app.py                  # Main Flask application
@@ -77,7 +77,7 @@ HostelManagement/
         └── list.html
 ```
 
-## 📊 Database Schema
+## Database Schema
 
 | Table | Key Columns |
 |-------|------------|
@@ -86,7 +86,7 @@ HostelManagement/
 | students | id, name, roll_no, email, gender, room_id |
 | complaints | id, student_id, title, description, status, created_at |
 
-## 📝 CSV Upload Format
+## CSV Upload Format
 
 ### Rooms CSV
 ```
