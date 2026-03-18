@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Hostel Manager{% endblock %}</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Your custom CSS (loads after Bootstrap so it can override) -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">🏨</span>
+      <span class="brand-name">IIT GOA HOSTEL</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('dashboard') }}"
+         class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+
+      <div class="nav-section-label">MANAGEMENT</div>
+
+      <a href="{{ url_for('list_students') }}"
+         class="nav-link {% if 'student' in request.endpoint %}active{% endif %}">
+        <span class="nav-icon">🎓</span> Students
+      </a>
+      <a href="{{ url_for('list_rooms') }}"
+         class="nav-link {% if 'room' in request.endpoint %}active{% endif %}">
+        <span class="nav-icon">🚪</span> Rooms
+      </a>
+      <a href="{{ url_for('available_rooms') }}"
+         class="nav-link {% if request.endpoint == 'available_rooms' %}active{% endif %}">
+        <span class="nav-icon">✅</span> Available Rooms
+      </a>
+      <a href="{{ url_for('list_complaints') }}"
+         class="nav-link {% if 'complaint' in request.endpoint %}active{% endif %}">
+        <span class="nav-icon">📋</span> Complaints
+      </a>
+
+      {% if current_user.role == 'admin' %}
+      <div style="margin:1.5rem 1.25rem 0;padding:.5rem .75rem;
+                  background:rgba(59,130,246,0.15);border-radius:8px;
+                  border:1px solid rgba(59,130,246,0.3);">
+        <span style="font-size:.7rem;font-weight:700;color:#60a5fa;
+                     text-transform:uppercase;letter-spacing:.08em;">
+          🛡️ Admin Access
+        </span>
+      </div>
+      {% else %}
+      <div style="margin:1.5rem 1.25rem 0;padding:.5rem .75rem;
+                  background:rgba(34,197,94,0.1);border-radius:8px;
+                  border:1px solid rgba(34,197,94,0.25);">
+        <span style="font-size:.7rem;font-weight:700;color:#4ade80;
+                     text-transform:uppercase;letter-spacing:.08em;">
+          🎓 Student Access
+        </span>
+        <p style="font-size:.68rem;color:#334155;margin-top:.2rem;">
+          View &amp; complaints only
+        </p>
+      </div>
+      {% endif %}
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <span class="user-avatar">{{ current_user.username[0].upper() }}</span>
+        <div class="user-info">
+          <span class="user-name">{{ current_user.username }}</span>
+          <span class="user-role">{{ current_user.role }}</span>
+        </div>
+      </div>
+      <a href="{{ url_for('logout') }}" class="btn-logout">⏻ Logout</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <!-- Bootstrap alerts for flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'danger'
+                                       else 'success' if category == 'success'
+                                       else 'warning' if category == 'warning'
+                                       else 'info' }} alert-dismissible fade show"
+                 role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

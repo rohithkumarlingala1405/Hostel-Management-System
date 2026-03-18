@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — HostelMS{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-sub">Overview of your hostel at a glance</p>
+  </div>
+</div>
+
+<!-- Stat Cards using Bootstrap grid -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-xl-4">
+    <div class="stat-card stat-blue">
+      <div class="stat-icon">🎓</div>
+      <div class="stat-body">
+        <span class="stat-number">{{ total_students }}</span>
+        <span class="stat-label">Total Students</span>
+      </div>
+      <a href="{{ url_for('list_students') }}" class="stat-link">View all →</a>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-4">
+    <div class="stat-card stat-green">
+      <div class="stat-icon">🚪</div>
+      <div class="stat-body">
+        <span class="stat-number">{{ total_rooms }}</span>
+        <span class="stat-label">Total Rooms</span>
+      </div>
+      <a href="{{ url_for('list_rooms') }}" class="stat-link">View all →</a>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-4">
+    <div class="stat-card stat-teal">
+      <div class="stat-icon">✅</div>
+      <div class="stat-body">
+        <span class="stat-number">{{ available_rooms }}</span>
+        <span class="stat-label">Available Rooms</span>
+      </div>
+      <a href="{{ url_for('available_rooms') }}" class="stat-link">View all →</a>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-4">
+    <div class="stat-card stat-orange">
+      <div class="stat-icon">📋</div>
+      <div class="stat-body">
+        <span class="stat-number">{{ total_complaints }}</span>
+        <span class="stat-label">Total Complaints</span>
+      </div>
+      <a href="{{ url_for('list_complaints') }}" class="stat-link">View all →</a>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-4">
+    <div class="stat-card stat-red">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-body">
+        <span class="stat-number">{{ pending_complaints }}</span>
+        <span class="stat-label">Pending Complaints</span>
+      </div>
+      <a href="{{ url_for('list_complaints') }}?status=pending" class="stat-link">View pending →</a>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<section class="section">
+  <h2 class="section-title">Quick Actions</h2>
+  <div class="row g-3">
+    <div class="col-6 col-md-3">
+      <a href="{{ url_for('add_student') }}" class="action-card">
+        <span class="action-icon">➕</span>
+        <span class="action-label">Add Student</span>
+      </a>
+    </div>
+    <div class="col-6 col-md-3">
+      <a href="{{ url_for('add_room') }}" class="action-card">
+        <span class="action-icon">🏠</span>
+        <span class="action-label">Add Room</span>
+      </a>
+    </div>
+    <div class="col-6 col-md-3">
+      <a href="{{ url_for('add_complaint') }}" class="action-card">
+        <span class="action-icon">📝</span>
+        <span class="action-label">New Complaint</span>
+      </a>
+    </div>
+    <div class="col-6 col-md-3">
+      <a href="{{ url_for('available_rooms') }}" class="action-card">
+        <span class="action-icon">🔍</span>
+        <span class="action-label">Find Room</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

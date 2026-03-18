@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}Complaints — HostelMS{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Complaints</h1>
+    <p class="page-sub">Track and manage student complaints</p>
+  </div>
+  <a href="{{ url_for('add_complaint') }}" class="btn btn-primary">+ New Complaint</a>
+</div>
+
+{% if show_form %}
+<div class="card mb-4 shadow-sm">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Submit a Complaint</h5>
+    <form method="POST" action="{{ url_for('add_complaint') }}" novalidate>
+
+      {{ form.hidden_tag() }}
+
+      <div class="mb-3">
+        {{ form.student_id.label(class='form-label fw-bold') }}
+        {{ form.student_id(class='form-select') }}
+        {% for error in form.student_id.errors %}
+          <div class="text-danger small mt-1">⚠ {{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.title.label(class='form-label fw-bold') }}
+        {{ form.title(class='form-control', placeholder='e.g. Broken fan, Water leakage') }}
+        {% for error in form.title.errors %}
+          <div class="text-danger small mt-1">⚠ {{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="mb-3">
+        {{ form.description.label(class='form-label fw-bold') }}
+        {{ form.description(class='form-control', rows=4, placeholder='Describe the issue in detail…') }}
+        {% for error in form.description.errors %}
+          <div class="text-danger small mt-1">⚠ {{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="d-flex gap-2">
+        {{ form.submit(class='btn btn-primary') }}
+        <a href="{{ url_for('list_complaints') }}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endif %}
+
+<!-- Status Filter Tabs -->
+<ul class="nav nav-tabs mb-4">
+  <li class="nav-item">
+    <a href="{{ url_for('list_complaints') }}"
+       class="nav-link {% if status == 'all' %}active{% endif %}">All</a>
+  </li>
+  <li class="nav-item">
+    <a href="{{ url_for('list_complaints') }}?status=pending"
+       class="nav-link {% if status == 'pending' %}active{% endif %}">
+       <span class="badge bg-danger me-1">●</span>Pending
+    </a>
+  </li>
+  <li class="nav-item">
+    <a href="{{ url_for('list_complaints') }}?status=in-progress"
+       class="nav-link {% if status == 'in-progress' %}active{% endif %}">
+       <span class="badge bg-warning me-1">●</span>In Progress
+    </a>
+  </li>
+  <li class="nav-item">
+    <a href="{{ url_for('list_complaints') }}?status=resolved"
+       class="nav-link {% if status == 'resolved' %}active{% endif %}">
+       <span class="badge bg-success me-1">●</span>Resolved
+    </a>
+  </li>
+</ul>
+
+{% if complaints %}
+<div class="d-flex flex-column gap-3">
+  {% for c in complaints %}
+  <div class="card shadow-sm border-start border-4
+    {% if c.status == 'resolved' %}border-success
+    {% elif c.status == 'in-progress' %}border-warning
+    {% else %}border-danger{% endif %}">
+    <div class="card-body">
+
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <div>
+          <h6 class="card-title mb-1 fw-bold">{{ c.title }}</h6>
+          <small class="text-muted">
+            by <strong>{{ c.student.name }}</strong> ({{ c.student.roll_no }})
+            &nbsp;·&nbsp; {{ c.created_at.strftime('%Y-%m-%d %H:%M') }}
+          </small>
+        </div>
+        <span class="badge
+          {% if c.status == 'resolved' %}bg-success
+          {% elif c.status == 'in-progress' %}bg-warning text-dark
+          {% else %}bg-danger{% endif %}">
+          {{ c.status }}
+        </span>
+      </div>
+
+      <p class="card-text text-secondary mb-3">{{ c.description }}</p>
+
+      <div class="d-flex gap-2 align-items-center flex-wrap">
+        {% if current_user.role == 'admin' %}
+          <form method="POST"
+                action="{{ url_for('update_complaint_status', complaint_id=c.id) }}"
+                class="d-flex gap-2 align-items-center">
+            <select name="status" class="form-select form-select-sm" style="width:auto;">
+              <option value="pending"     {% if c.status == 'pending'     %}selected{% endif %}>Pending</option>
+              <option value="in-progress" {% if c.status == 'in-progress' %}selected{% endif %}>In Progress</option>
+              <option value="resolved"    {% if c.status == 'resolved'    %}selected{% endif %}>Resolved</option>
+            </select>
+            <button type="submit" class="btn btn-sm btn-outline-secondary">Update</button>
+          </form>
+          <form method="POST"
+                action="{{ url_for('delete_complaint', complaint_id=c.id) }}"
+                onsubmit="return confirm('Delete this complaint?')">
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+          </form>
+        {% else %}
+          <small class="text-muted fst-italic">Status is managed by admin</small>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+  <div class="empty-state">
+    <span class="empty-icon">📋</span>
+    <p>No complaints found{% if status != 'all' %} for status "{{ status }}"{% endif %}.</p>
+  </div>
+{% endif %}
+
+{% endblock %}

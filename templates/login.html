@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — IIT Goa HostelMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      background: #0f172a;
+      overflow: hidden;
+    }
+
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .orb-1 { width: 500px; height: 500px; background: #3b82f6; top: -100px; left: -100px; animation-duration: 14s; }
+    .orb-2 { width: 400px; height: 400px; background: #8b5cf6; top: 30%; right: -80px; animation-duration: 10s; animation-delay: -4s; }
+    .orb-3 { width: 300px; height: 300px; background: #06b6d4; bottom: -60px; left: 30%; animation-duration: 16s; animation-delay: -7s; }
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(40px, 30px) scale(1.08); }
+    }
+
+    .dot-grid {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    .login-wrapper {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    /* ── LEFT PANEL ── */
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 3rem 4rem;
+      animation: fadeInLeft 0.8s ease both;
+    }
+    @keyframes fadeInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ── Brand Row ── */
+    .brand-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 3rem;
+    }
+    .brand-main {
+      font-family: 'Sora', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+    .brand-sub {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #64748b;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* ── Hero Text ── */
+    .hero-headline {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+    .hero-headline span {
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      color: #94a3b8;
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 400px;
+      margin-bottom: 3rem;
+    }
+
+    /* ── Stat Chips ── */
+    .stat-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-width: 380px;
+    }
+    .stat-row { display: flex; gap: 0.75rem; }
+
+    .stat-chip {
+      flex: 1;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 0.9rem 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      backdrop-filter: blur(8px);
+      animation: floatUp 0.9s ease both;
+    }
+    .stat-chip:nth-child(1) { animation-delay: 0.2s; }
+    .stat-chip:nth-child(2) { animation-delay: 0.35s; }
+    .stat-chip:nth-child(3) { animation-delay: 0.5s; }
+    .stat-chip:nth-child(4) { animation-delay: 0.65s; }
+    @keyframes floatUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .chip-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .chip-icon.blue   { background: rgba(59,130,246,0.25); }
+    .chip-icon.green  { background: rgba(34,197,94,0.25); }
+    .chip-icon.purple { background: rgba(139,92,246,0.25); }
+    .chip-icon.orange { background: rgba(249,115,22,0.25); }
+
+    .chip-label { font-size: 0.72rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .chip-value { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700; color: #e2e8f0; }
+
+    /* ── RIGHT PANEL ── */
+    .right-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: rgba(255,255,255,0.03);
+      border-left: 1px solid rgba(255,255,255,0.08);
+      animation: fadeInRight 0.8s ease both;
+    }
+    @keyframes fadeInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .form-card {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .form-greeting {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #f1f5f9;
+      margin-bottom: 0.35rem;
+    }
+    .form-sub {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Role tabs */
+    .role-tabs {
+      display: flex;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 1.75rem;
+      gap: 4px;
+    }
+    .role-tab {
+      flex: 1;
+      padding: 0.55rem 1rem;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: #64748b;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .role-tab.active {
+      background: rgba(255,255,255,0.12);
+      color: #f1f5f9;
+    }
+
+    /* Flash messages */
+    .flash-msg {
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+    }
+    .flash-danger  { background: rgba(239,68,68,0.15);  color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+    .flash-success { background: rgba(34,197,94,0.15);  color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
+    .flash-warning { background: rgba(249,115,22,0.15); color: #fdba74; border: 1px solid rgba(249,115,22,0.3); }
+    .flash-info    { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+
+    /* Form inputs */
+    .field { margin-bottom: 1.1rem; }
+    .field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+    }
+    .field input {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 9px;
+      color: #f1f5f9;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      transition: border-color 0.2s, background 0.2s;
+      outline: none;
+    }
+    .field input::placeholder { color: #475569; }
+    .field input:focus {
+      border-color: #3b82f6;
+      background: rgba(59,130,246,0.08);
+    }
+
+    /* Submit button */
+    .btn-login {
+      width: 100%;
+      padding: 0.8rem;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: opacity 0.2s, transform 0.15s;
+      letter-spacing: 0.02em;
+    }
+    .btn-login:hover  { opacity: 0.9; transform: translateY(-1px); }
+    .btn-login:active { transform: scale(0.98); }
+
+    /* Credential cards */
+    .cred-section { margin-top: 1.75rem; }
+    .cred-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #334155;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.75rem;
+      text-align: center;
+    }
+    .cred-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+
+    .cred-card {
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.2s;
+    }
+    .cred-card:hover { transform: translateY(-2px); }
+    .cred-card.admin-card {
+      background: rgba(59,130,246,0.1);
+      border-color: rgba(59,130,246,0.25);
+    }
+    .cred-card.student-card {
+      background: rgba(34,197,94,0.1);
+      border-color: rgba(34,197,94,0.25);
+    }
+    .cred-role {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+    }
+    .admin-card   .cred-role { color: #60a5fa; }
+    .student-card .cred-role { color: #4ade80; }
+
+    .cred-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-bottom: 0.2rem;
+    }
+    .cred-val {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .admin-card   .cred-val { color: #93c5fd; }
+    .student-card .cred-val { color: #86efac; }
+
+    .cred-hint {
+      font-size: 0.68rem;
+      color: #475569;
+      text-align: center;
+      margin-top: 0.6rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 800px) {
+      .login-wrapper { grid-template-columns: 1fr; }
+      .left-panel { display: none; }
+      .right-panel {
+        border-left: none;
+        background: transparent;
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Animated background -->
+  <div class="bg-canvas">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="dot-grid"></div>
+
+  <div class="login-wrapper">
+
+    <!-- ═══════════════ LEFT PANEL ═══════════════ -->
+    <div class="left-panel">
+
+      <!-- IIT GOA Brand — just the name, big and bold -->
+      <div class="brand-row">
+        <div>
+          <div class="brand-main">IIT GOA</div>
+          <div class="brand-sub">Hostel Management System</div>
+        </div>
+      </div>
+
+      <h1 class="hero-headline">
+        Manage your<br/>hostel <span>smarter</span><br/>not harder.
+      </h1>
+      <p class="hero-sub">
+        A unified platform for room assignments, student records,
+        and complaint tracking — all in one place.
+      </p>
+
+      <!-- Floating stat chips -->
+      <div class="stat-cards">
+        <div class="stat-row">
+          <div class="stat-chip">
+            <div class="chip-icon blue">🎓</div>
+            <div>
+              <div class="chip-label">Students</div>
+              <div class="chip-value">Managed</div>
+            </div>
+          </div>
+          <div class="stat-chip">
+            <div class="chip-icon green">🚪</div>
+            <div>
+              <div class="chip-label">Rooms</div>
+              <div class="chip-value">Tracked</div>
+            </div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-chip">
+            <div class="chip-icon purple">📋</div>
+            <div>
+              <div class="chip-label">Complaints</div>
+              <div class="chip-value">Resolved</div>
+            </div>
+          </div>
+          <div class="stat-chip">
+            <div class="chip-icon orange">✅</div>
+            <div>
+              <div class="chip-label">Availability</div>
+              <div class="chip-value">Real-time</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════════ RIGHT PANEL ═══════════════ -->
+    <div class="right-panel">
+      <div class="form-card">
+
+        <h2 class="form-greeting">Welcome back 👋</h2>
+        <p class="form-sub">Sign in to your account to continue</p>
+
+        <!-- Role tabs -->
+        <div class="role-tabs">
+          <button class="role-tab active" id="tab-admin" onclick="fillCreds('admin')">
+            🛡️ Admin
+          </button>
+          <button class="role-tab" id="tab-student" onclick="fillCreds('student')">
+            🎓 Student
+          </button>
+        </div>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash-msg flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('login') }}" novalidate>
+          {{ form.hidden_tag() }}
+          <div class="field">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text"
+                   placeholder="Enter your username"
+                   required autocomplete="username"/>
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password"
+                   placeholder="Enter your password"
+                   required autocomplete="current-password"/>
+          </div>
+          <button type="submit" class="btn-login">Sign In →</button>
+        </form>
+
+        <!-- Credential cards -->
+        <div class="cred-section">
+          <p class="cred-title">Default credentials</p>
+          <div class="cred-cards">
+
+            <div class="cred-card admin-card" onclick="fillCreds('admin')" title="Click to auto-fill">
+              <div class="cred-role">🛡️ Admin</div>
+              <div class="cred-line">
+                <span>user</span>
+                <span class="cred-val">admin</span>
+              </div>
+              <div class="cred-line">
+                <span>pass</span>
+                <span class="cred-val">admin123</span>
+              </div>
+            </div>
+
+            <div class="cred-card student-card" onclick="fillCreds('student')" title="Click to auto-fill">
+              <div class="cred-role">🎓 Student</div>
+              <div class="cred-line">
+                <span>user</span>
+                <span class="cred-val">student</span>
+              </div>
+              <div class="cred-line">
+                <span>pass</span>
+                <span class="cred-val">student123</span>
+              </div>
+            </div>
+
+          </div>
+          <p class="cred-hint">💡 Click a card to auto-fill the form</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function fillCreds(role) {
+      const u = document.getElementById('username');
+      const p = document.getElementById('password');
+      const tabAdmin   = document.getElementById('tab-admin');
+      const tabStudent = document.getElementById('tab-student');
+
+      if (role === 'admin') {
+        u.value = 'admin';
+        p.value = 'admin123';
+        tabAdmin.classList.add('active');
+        tabStudent.classList.remove('active');
+      } else {
+        u.value = 'student';
+        p.value = 'student123';
+        tabStudent.classList.add('active');
+        tabAdmin.classList.remove('active');
+      }
+      [u, p].forEach(el => {
+        el.style.borderColor = role === 'admin' ? '#3b82f6' : '#22c55e';
+        setTimeout(() => el.style.borderColor = '', 800);
+      });
+    }
+  </script>
+
+</body>
+</html>

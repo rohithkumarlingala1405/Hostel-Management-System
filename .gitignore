@@ -1,0 +1,11 @@
+database.db
+instance/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.vscode/
+fix.py
+test_rooms.csv
+test_students.csv
+.env

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Available Rooms — IIT Goa Hostel{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Available Rooms</h1>
+    <p class="page-sub">
+      {% if rooms %}{{ rooms|length }} room(s) have free beds
+      {% else %}All rooms are currently full{% endif %}
+    </p>
+  </div>
+  <a href="{{ url_for('list_rooms') }}" class="btn btn-ghost">← All Rooms</a>
+</div>
+
+{% if rooms %}
+  <div class="room-card-grid">
+    {% for r in rooms %}
+    <div class="room-card">
+
+      <!-- Block badge + Room name -->
+      <div class="room-card-header">
+        <div>
+          <span style="font-size:.7rem;font-weight:700;text-transform:uppercase;
+                       letter-spacing:.08em;color:
+                       {% if r.block in ['B1','B2','B3'] %}#3b82f6{% else %}#ec4899{% endif %};">
+            {% if r.block in ['B1','B2','B3'] %}👨 Boys — {{ r.block }}
+            {% else %}👩 Girls — {{ r.block }}{% endif %}
+          </span>
+          <div class="room-number" style="margin-top:.2rem;">
+            Room {{ r.room_number }}
+          </div>
+        </div>
+        <span class="badge bg-success text-white">
+          {{ r.available }} bed(s) free
+        </span>
+      </div>
+
+      <!-- Stats -->
+      <div class="room-card-stats">
+        <div class="room-stat">
+          <span class="rs-label">Floor</span>
+          <span class="rs-value">{{ r.floor }}</span>
+        </div>
+        <div class="room-stat">
+          <span class="rs-label">Capacity</span>
+          <span class="rs-value">{{ r.capacity }}</span>
+        </div>
+        <div class="room-stat">
+          <span class="rs-label">Occupied</span>
+          <span class="rs-value">{{ r.occupied }}</span>
+        </div>
+      </div>
+
+      <!-- Occupancy bar -->
+      <div class="progress mt-3" style="height:8px;">
+        <div class="progress-bar bg-success"
+             style="width:{{ (r.occupied / r.capacity * 100)|int }}%">
+        </div>
+      </div>
+      <p style="font-size:.75rem;color:var(--text-muted);margin-top:.3rem;">
+        {{ r.occupied }}/{{ r.capacity }} occupied
+      </p>
+
+      <!-- Assign button — links to new assign page -->
+      {% if current_user.role == 'admin' %}
+        <a href="{{ url_for('assign_student', room_id=r.id) }}"
+           class="btn btn-primary btn-full mt-3" style="color:#fff;">
+          {% if r.block in ['B1','B2','B3'] %}
+            👨 Assign Male Student →
+          {% else %}
+            👩 Assign Female Student →
+          {% endif %}
+        </a>
+      {% else %}
+        <div class="mt-3 text-center">
+          <small class="text-muted">Room assignment managed by admin</small>
+        </div>
+      {% endif %}
+
+    </div>
+    {% endfor %}
+  </div>
+
+{% else %}
+  <div class="empty-state">
+    <span class="empty-icon">🚪</span>
+    <p>No available rooms at the moment.</p>
+    {% if current_user.role == 'admin' %}
+      <a href="{{ url_for('add_room') }}" class="btn btn-primary"
+         style="color:#fff;">Add More Rooms</a>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% endblock %}

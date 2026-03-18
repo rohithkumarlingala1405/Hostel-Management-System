@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Bulk Upload Students — IIT Goa Hostel{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Bulk Upload Students</h1>
+    <p class="page-sub">Upload a CSV file to add multiple students at once.</p>
+  </div>
+  <a href="{{ url_for('list_students') }}" class="btn btn-ghost">← Back to Students</a>
+</div>
+
+<div class="form-card" style="max-width:640px;">
+
+  <!-- Upload form -->
+  <form method="POST" action="{{ url_for('bulk_upload_students') }}"
+        enctype="multipart/form-data" novalidate>
+
+    <div class="form-group">
+      <label for="csv_file">Select CSV File <span class="required">*</span></label>
+      <input type="file" id="csv_file" name="csv_file" accept=".csv" required
+             style="padding:.5rem;border:2px dashed var(--border);border-radius:var(--radius-sm);
+                    width:100%;background:var(--surface);cursor:pointer;"/>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" style="color:#fff;">
+        ⬆ Upload & Import
+      </button>
+      <a href="{{ url_for('list_students') }}" class="btn btn-ghost">Cancel</a>
+    </div>
+
+  </form>
+
+  <!-- CSV Format Guide -->
+  <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);">
+    <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem;">
+      📋 CSV Format Guide
+    </h3>
+
+    <!-- Required columns -->
+    <div style="margin-bottom:1rem;">
+      <p style="font-size:.85rem;color:var(--text-secondary);margin-bottom:.5rem;">
+        <strong>Required columns:</strong>
+      </p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <span class="badge bg-danger text-white">name</span>
+        <span class="badge bg-danger text-white">roll_no</span>
+      </div>
+    </div>
+
+    <!-- Optional columns -->
+    <div style="margin-bottom:1.25rem;">
+      <p style="font-size:.85rem;color:var(--text-secondary);margin-bottom:.5rem;">
+        <strong>Optional columns:</strong>
+      </p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <span class="badge bg-secondary text-white">email</span>
+        <span class="badge bg-secondary text-white">block</span>
+        <span class="badge bg-secondary text-white">room_number</span>
+      </div>
+    </div>
+
+    <!-- Block reference -->
+    <div style="margin-bottom:1.25rem;">
+      <p style="font-size:.85rem;color:var(--text-secondary);margin-bottom:.5rem;">
+        <strong>Valid Block values:</strong>
+      </p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <span class="badge bg-primary text-white">B1 — Boys Block 1</span>
+        <span class="badge bg-primary text-white">B2 — Boys Block 2</span>
+        <span class="badge bg-primary text-white">B3 — Boys Block 3</span>
+        <span class="badge bg-info text-white">G1 — Girls Block 1</span>
+      </div>
+    </div>
+
+    <!-- Example table -->
+    <p style="font-size:.85rem;font-weight:700;margin-bottom:.5rem;">
+      Example CSV:
+    </p>
+    <div class="table-responsive">
+      <table class="table table-sm table-bordered">
+        <thead class="table-light">
+          <tr>
+            <th>name</th>
+            <th>roll_no</th>
+            <th>email</th>
+            <th>block</th>
+            <th>room_number</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ravi Kumar</td>
+            <td>20241001</td>
+            <td>ravi@iitgoa.ac.in</td>
+            <td>B1</td>
+            <td>101</td>
+          </tr>
+          <tr>
+            <td>Priya Sharma</td>
+            <td>20241002</td>
+            <td>priya@iitgoa.ac.in</td>
+            <td>G1</td>
+            <td>101</td>
+          </tr>
+          <tr>
+            <td>Amit Patel</td>
+            <td>20241003</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Notes -->
+    <div style="margin-top:1rem;padding:.85rem 1rem;background:#fef9c3;
+                border-radius:var(--radius-sm);border:1px solid #fde68a;">
+      <p style="font-size:.82rem;color:#854d0e;line-height:1.7;">
+        <strong>📌 Notes:</strong><br/>
+        • Column names must match exactly (lowercase)<br/>
+        • Duplicate roll numbers will be skipped automatically<br/>
+        • <strong>Both block AND room_number</strong> must be provided to assign a room<br/>
+        • Valid blocks: B1, B2, B3 (Boys) and G1 (Girls)<br/>
+        • If block/room not found or room is full, student is added without a room<br/>
+        • Rows with missing name or roll_no are skipped
+      </p>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

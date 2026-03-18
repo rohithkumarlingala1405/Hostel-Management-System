@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Assign Student — {{ room.full_name }}{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Assign Student</h1>
+    <p class="page-sub">
+      Assigning to <strong>Room {{ room.full_name }}</strong>
+      — {{ room.occupied }}/{{ room.capacity }} occupied
+    </p>
+  </div>
+  <a href="{{ url_for('available_rooms') }}" class="btn btn-ghost">← Back to Available Rooms</a>
+</div>
+
+<!-- Room Info Card -->
+<div class="card mb-4 shadow-sm border-start border-4
+  {% if room.block in ['B1','B2','B3'] %}border-primary{% else %}border-info{% endif %}">
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-auto">
+        <span style="font-size:2rem;">
+          {% if room.block in ['B1','B2','B3'] %}👨{% else %}👩{% endif %}
+        </span>
+      </div>
+      <div class="col">
+        <h5 class="mb-1">{{ room.full_name }}</h5>
+        <p class="mb-0 text-muted" style="font-size:.875rem;">
+          {{ block_label }} &nbsp;·&nbsp;
+          Floor {{ room.floor }} &nbsp;·&nbsp;
+          {{ room.available }} bed(s) free &nbsp;·&nbsp;
+          <span class="badge
+            {% if room.block in ['B1','B2','B3'] %}bg-primary{% else %}bg-info{% endif %}
+            text-white">
+            {{ allowed_gender }} only
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if students %}
+<div class="form-card" style="max-width:560px;">
+  <h5 class="mb-3">Select Student to Assign</h5>
+
+  <form method="POST"
+        action="{{ url_for('assign_student', room_id=room.id) }}"
+        novalidate>
+
+    <div class="form-group mb-3">
+      <label for="student_id" class="form-label fw-bold">
+        Student <span class="required">*</span>
+      </label>
+      <select id="student_id" name="student_id" class="form-select" required>
+        <option value="">— Select a student —</option>
+        {% for s in students %}
+          <option value="{{ s.id }}">
+            {{ s.name }} ({{ s.roll_no }})
+            {% if s.email %} — {{ s.email }}{% endif %}
+          </option>
+        {% endfor %}
+      </select>
+      <small class="text-muted">
+        Showing {{ students|length }} unassigned
+        {{ allowed_gender }} student(s)
+      </small>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" style="color:#fff;">
+        ✅ Assign to {{ room.full_name }}
+      </button>
+      <a href="{{ url_for('available_rooms') }}" class="btn btn-ghost">Cancel</a>
+    </div>
+
+  </form>
+</div>
+
+{% else %}
+  <div class="empty-state">
+    <span class="empty-icon">
+      {% if allowed_gender == 'Male' %}👨{% else %}👩{% endif %}
+    </span>
+    <p>
+      No unassigned {{ allowed_gender }} students available.<br/>
+      <small class="text-muted">
+        All {{ allowed_gender }} students are already assigned to rooms,
+        or no {{ allowed_gender }} students have been added yet.
+      </small>
+    </p>
+    <a href="{{ url_for('add_student') }}" class="btn btn-primary"
+       style="color:#fff;">
+      + Add Student
+    </a>
+  </div>
+{% endif %}
+
+{% endblock %}

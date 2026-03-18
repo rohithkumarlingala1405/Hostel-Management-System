@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Students — IIT Goa Hostel{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Students</h1>
+    <p class="page-sub">{{ students|length }} student(s) found</p>
+  </div>
+  {% if current_user.role == 'admin' %}
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('bulk_upload_students') }}" class="btn btn-secondary">⬆ Bulk Upload</a>
+    <a href="{{ url_for('add_student') }}" class="btn btn-primary">+ Add Student</a>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Search -->
+<form method="GET" action="{{ url_for('list_students') }}" class="d-flex gap-2 mb-4">
+  <input type="text" name="search" class="form-control"
+         placeholder="Search by name or roll number…"
+         value="{{ search or '' }}"/>
+  <button type="submit" class="btn btn-secondary">Search</button>
+  {% if search %}
+    <a href="{{ url_for('list_students') }}" class="btn btn-outline-secondary">Clear</a>
+  {% endif %}
+</form>
+
+{% if students %}
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Roll No.</th>
+        <th>Email</th>
+        <th>Gender</th>
+        <th>Room</th>
+        {% if current_user.role == 'admin' %}
+          <th>Actions</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in students %}
+      <tr>
+        <td class="text-muted">{{ loop.index }}</td>
+        <td><strong>{{ s.name }}</strong></td>
+        <td><code>{{ s.roll_no }}</code></td>
+        <td>{{ s.email or '—' }}</td>
+        <td>
+          {% if s.gender == 'Male' %}
+            <span class="badge bg-primary text-white">👨 Male</span>
+          {% else %}
+            <span class="badge bg-info text-white">👩 Female</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if s.room %}
+            <span class="badge bg-success text-white">{{ s.room.full_name }}</span>
+          {% else %}
+            <span class="badge bg-secondary text-white">Unassigned</span>
+          {% endif %}
+        </td>
+        {% if current_user.role == 'admin' %}
+        <td>
+          <div class="d-flex gap-2">
+            <a href="{{ url_for('edit_student', student_id=s.id) }}"
+               class="btn btn-sm btn-outline-secondary">Edit</a>
+            <form method="POST" action="{{ url_for('delete_student', student_id=s.id) }}"
+                  onsubmit="return confirm('Delete {{ s.name }}?')">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          </div>
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% else %}
+  <div class="empty-state">
+    <span class="empty-icon">🎓</span>
+    <p>No students found.
+      {% if search %}
+        <a href="{{ url_for('list_students') }}">Clear search</a>
+      {% endif %}
+    </p>
+    {% if current_user.role == 'admin' %}
+      <a href="{{ url_for('add_student') }}" class="btn btn-primary" style="color:#fff;">
+        Add First Student
+      </a>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% endblock %}

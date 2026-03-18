@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Bulk Upload Rooms — HostelMS{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Bulk Upload Rooms</h1>
+    <p class="page-sub">Upload a CSV file to add multiple rooms at once.</p>
+  </div>
+  <a href="{{ url_for('list_rooms') }}" class="btn btn-ghost">← Back to Rooms</a>
+</div>
+
+<div class="form-card" style="max-width:640px;">
+
+  <form method="POST" action="{{ url_for('bulk_upload_rooms') }}"
+        enctype="multipart/form-data" novalidate>
+
+    <div class="form-group">
+      <label for="csv_file">Select CSV File <span class="required">*</span></label>
+      <input type="file" id="csv_file" name="csv_file" accept=".csv" required
+             style="padding:.5rem;border:2px dashed var(--border);border-radius:var(--radius-sm);
+                    width:100%;background:var(--surface);cursor:pointer;"/>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">⬆ Upload & Import</button>
+      <a href="{{ url_for('list_rooms') }}" class="btn btn-ghost">Cancel</a>
+    </div>
+
+  </form>
+
+  <!-- CSV Format Guide -->
+  <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);">
+    <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem;">
+      📋 CSV Format Guide
+    </h3>
+
+    <div style="margin-bottom:1rem;">
+      <p style="font-size:.85rem;color:var(--text-secondary);margin-bottom:.5rem;">
+        <strong>Required columns:</strong>
+      </p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <span class="badge badge-red">room_number</span>
+        <span class="badge badge-red">floor</span>
+        <span class="badge badge-red">capacity</span>
+      </div>
+    </div>
+
+    <!-- Example table -->
+    <p style="font-size:.85rem;font-weight:700;margin-bottom:.5rem;">
+      Example CSV:
+    </p>
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>room_number</th>
+            <th>floor</th>
+            <th>capacity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>A-101</td><td>1</td><td>2</td></tr>
+          <tr><td>A-102</td><td>1</td><td>3</td></tr>
+          <tr><td>B-201</td><td>2</td><td>2</td></tr>
+          <tr><td>B-202</td><td>2</td><td>4</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:1rem;padding:.85rem 1rem;background:#fef9c3;
+                border-radius:var(--radius-sm);border:1px solid #fde68a;">
+      <p style="font-size:.82rem;color:#854d0e;line-height:1.7;">
+        <strong>📌 Notes:</strong><br/>
+        • Column names must match exactly (lowercase)<br/>
+        • Duplicate room numbers will be skipped automatically<br/>
+        • Floor must be between 0 and 50<br/>
+        • Capacity must be between 1 and 20
+      </p>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

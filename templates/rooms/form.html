@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} Room — HostelMS{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ action }} Room</h1>
+    <p class="page-sub">Define the block, room number, floor, and capacity.</p>
+  </div>
+  <a href="{{ url_for('list_rooms') }}" class="btn btn-ghost">← Back to Rooms</a>
+</div>
+
+<div class="form-card">
+  <form method="POST" action="{{ url_for('add_room') }}" novalidate>
+
+    {{ form.hidden_tag() }}
+
+    <!-- Block -->
+    <div class="form-group">
+      {{ form.block.label(class='form-label fw-bold') }}
+      <span class="required">*</span>
+      {{ form.block(class='form-select') }}
+      {% for error in form.block.errors %}
+        <div class="text-danger small mt-1">⚠ {{ error }}</div>
+      {% endfor %}
+      <small class="form-hint">
+        B1, B2, B3 = Boys Blocks &nbsp;|&nbsp; G1 = Girls Block
+      </small>
+    </div>
+
+    <!-- Room Number -->
+    <div class="form-group">
+      {{ form.room_number.label(class='form-label fw-bold') }}
+      <span class="required">*</span>
+      {{ form.room_number(placeholder='e.g. 101', class='form-control') }}
+      {% for error in form.room_number.errors %}
+        <div class="text-danger small mt-1">⚠ {{ error }}</div>
+      {% endfor %}
+      <small class="form-hint">
+        Room will be saved as Block-RoomNumber (e.g. B1-101)
+      </small>
+    </div>
+
+    <!-- Floor & Capacity -->
+    <div class="form-row">
+      <div class="form-group">
+        {{ form.floor.label(class='form-label fw-bold') }}
+        <span class="required">*</span>
+        {{ form.floor(placeholder='1', class='form-control') }}
+        {% for error in form.floor.errors %}
+          <div class="text-danger small mt-1">⚠ {{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.capacity.label(class='form-label fw-bold') }}
+        <span class="required">*</span>
+        {{ form.capacity(placeholder='2', class='form-control') }}
+        {% for error in form.capacity.errors %}
+          <div class="text-danger small mt-1">⚠ {{ error }}</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="form-actions">
+      {{ form.submit(class='btn btn-primary') }}
+      <a href="{{ url_for('list_rooms') }}" class="btn btn-ghost">Cancel</a>
+    </div>
+
+  </form>
+</div>
+
+{% endblock %}

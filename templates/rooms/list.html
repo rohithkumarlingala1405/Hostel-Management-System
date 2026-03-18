@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Rooms — HostelMS{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Rooms</h1>
+    <p class="page-sub">{{ rooms|length }} room(s) total</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{{ url_for('available_rooms') }}" class="btn btn-secondary">✅ Available</a>
+    {% if current_user.role == 'admin' %}
+      <a href="{{ url_for('bulk_upload_rooms') }}" class="btn btn-secondary">⬆ Bulk Upload</a>
+      <a href="{{ url_for('add_room') }}" class="btn btn-primary">+ Add Room</a>
+    {% endif %}
+  </div>
+</div>
+
+{% if rooms %}
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>#</th>
+        <th>Room No.</th>
+        <th>Floor</th>
+        <th>Capacity</th>
+        <th>Occupancy</th>
+        <th>Status</th>
+        {% if current_user.role == 'admin' %}<th>Actions</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rooms %}
+      <tr>
+        <td class="text-muted">{{ loop.index }}</td>
+        <td><strong>{{ r.full_name }}</strong><br/><small class="text-muted">{{ r.block }} Block</small></td>
+        <td>{{ r.floor }}</td>
+        <td>{{ r.capacity }}</td>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <div class="progress flex-grow-1" style="height:8px;">
+              <div class="progress-bar
+                {% if r.occupied == r.capacity %}bg-danger
+                {% elif r.occupied / r.capacity >= 0.75 %}bg-warning
+                {% else %}bg-success{% endif %}"
+                style="width:{{ (r.occupied / r.capacity * 100)|int }}%">
+              </div>
+            </div>
+            <small class="text-muted">{{ r.occupied }}/{{ r.capacity }}</small>
+          </div>
+        </td>
+        <td>
+          {% if r.occupied >= r.capacity %}
+            <span class="badge bg-danger">Full</span>
+          {% elif r.occupied > 0 %}
+            <span class="badge bg-warning text-dark">Partial</span>
+          {% else %}
+            <span class="badge bg-success">Empty</span>
+          {% endif %}
+        </td>
+        {% if current_user.role == 'admin' %}
+        <td>
+          <form method="POST" action="{{ url_for('delete_room', room_id=r.id) }}"
+                onsubmit="return confirm('Delete Room {{ r.room_number }}?')">
+            <button type="submit" class="btn btn-sm btn-danger"
+              {% if r.occupied > 0 %}disabled title="Room has students assigned"{% endif %}>
+              Delete
+            </button>
+          </form>
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+  <div class="empty-state">
+    <span class="empty-icon">🚪</span>
+    <p>No rooms have been added yet.</p>
+    {% if current_user.role == 'admin' %}
+      <a href="{{ url_for('add_room') }}" class="btn btn-primary">Add First Room</a>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% endblock %}
